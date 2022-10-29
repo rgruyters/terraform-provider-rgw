@@ -18,6 +18,11 @@ func schemaUser() map[string]*schema.Schema {
 			Required:    true,
 			ForceNew:    true,
 		},
+		"tenant": {
+			Description: "The tenant name where the user ID is part of.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
 		"display_name": {
 			Type:     schema.TypeString,
 			Computed: true,
@@ -191,6 +196,10 @@ func rgwUserFromSchemaUser(d *schema.ResourceData) rgwadmin.User {
 		ID: d.Get("user_id").(string),
 	}
 
+	if tenantId, ok := d.GetOk("tenant"); ok {
+		user.Tenant = tenantId.(string)
+	}
+
 	if displayName, ok := d.GetOk("display_name"); ok {
 		user.DisplayName = displayName.(string)
 	}
@@ -230,6 +239,7 @@ func flattenRgwUserCap(userCap rgwadmin.UserCapSpec) interface{} {
 func flattenRgwUser(user rgwadmin.User) interface{} {
 	return map[string]interface{}{
 		"user_id":               user.ID,
+		"tenant":                user.Tenant,
 		"display_name":          user.DisplayName,
 		"email":                 user.Email,
 		"suspended":             user.Suspended,
@@ -267,6 +277,10 @@ func resourceUserCreate(ctx context.Context, d *schema.ResourceData, m interface
 		user.UserCaps = userCaps.(string)
 	}
 
+	if tenantId, ok := d.GetOk("tenant"); ok {
+		user.Tenant = tenantId.(string)
+	}
+
 	user, err := api.CreateUser(ctx, user)
 	if err != nil {
 		return diag.FromErr(err)
@@ -282,11 +296,23 @@ func resourceUserCreate(ctx context.Context, d *schema.ResourceData, m interface
 func resourceUserRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	api := m.(*rgwadmin.API)
 	var diags diag.Diagnostics
+	var setUid string
 
 	userID, ok := d.GetOk("user_id")
 	if ok {
-		d.SetId(userID.(string))
+		setUid = userID.(string)
 	}
+
+	// HACK: We need to find a better way to set Id when a tenant is set.
+	// HACK: This works but feels not the right way. The API state that only uid
+	// HACK: can be set.
+	// HACK: https://docs.ceph.com/en/latest/radosgw/adminops/#get-user-info
+	tenant, ok := d.GetOk("tenant")
+	if ok {
+		setUid = tenant.(string) + "$" + setUid
+	}
+
+	d.SetId(setUid)
 
 	user, err := api.GetUser(ctx, rgwadmin.User{ID: d.Id()})
 	if err != nil {

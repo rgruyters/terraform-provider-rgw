@@ -24,46 +24,47 @@ resource "rgw_user" "my_user" {
 
 ### Required
 
-- **user_id** (String) The ID the user is referred by.
+- `user_id` (String) The ID the user is referred by.
 
 ### Optional
 
-- **display_name** (String)
-- **email** (String)
-- **generate_key** (Boolean) Only used for creation and modification. If true, a new key will be generated for the user. Default: true for creation, false for modification.
-- **id** (String) The ID of this resource.
-- **key_type** (String) Only use for creation and modification when `generate_key` is true.
-- **max_buckets** (Number)
-- **purge_data** (Number) Only used when deleting the user. Check Ceph RGW Admin Ops API documentation for details.
-- **suspended** (Number)
-- **user_caps** (String) Only used to set user capabilities. To get user capabilities, use `caps` read-only attribute instead.
+- `display_name` (String)
+- `email` (String)
+- `generate_key` (Boolean) Only used for creation and modification. If true, a new key will be generated for the user. Default: true for creation, false for modification.
+- `key_type` (String) Only use for creation and modification when `generate_key` is true.
+- `max_buckets` (Number)
+- `purge_data` (Number) Only used when deleting the user. Check Ceph RGW Admin Ops API documentation for details.
+- `suspended` (Number)
+- `tenant` (String) The tenant name where the user ID is part of.
+- `user_caps` (String) Only used to set user capabilities. To get user capabilities, use `caps` read-only attribute instead.
 
 ### Read-Only
 
-- **bucket_quota** (List of Object) (see [below for nested schema](#nestedatt--bucket_quota))
-- **caps** (List of Object) (see [below for nested schema](#nestedatt--caps))
-- **default_placement** (String)
-- **default_storage_class** (String)
-- **keys** (List of Object) (see [below for nested schema](#nestedatt--keys))
-- **op_mask** (String)
-- **placement_tags** (List of String)
-- **subusers** (List of Object) (see [below for nested schema](#nestedatt--subusers))
-- **swift_keys** (List of Object) (see [below for nested schema](#nestedatt--swift_keys))
-- **type** (String)
-- **user_quota** (List of Object) (see [below for nested schema](#nestedatt--user_quota))
+- `bucket_quota` (List of Object) (see [below for nested schema](#nestedatt--bucket_quota))
+- `caps` (List of Object) (see [below for nested schema](#nestedatt--caps))
+- `default_placement` (String)
+- `default_storage_class` (String)
+- `id` (String) The ID of this resource.
+- `keys` (List of Object) (see [below for nested schema](#nestedatt--keys))
+- `op_mask` (String)
+- `placement_tags` (List of String)
+- `subusers` (List of Object) (see [below for nested schema](#nestedatt--subusers))
+- `swift_keys` (List of Object) (see [below for nested schema](#nestedatt--swift_keys))
+- `type` (String)
+- `user_quota` (List of Object) (see [below for nested schema](#nestedatt--user_quota))
 
 <a id="nestedatt--bucket_quota"></a>
 ### Nested Schema for `bucket_quota`
 
 Read-Only:
 
-- **check_on_raw** (Boolean)
-- **enabled** (Boolean)
-- **max_objects** (Number)
-- **max_size** (Number)
-- **max_size_kb** (Number)
-- **type** (String)
-- **user_id** (String)
+- `check_on_raw` (Boolean)
+- `enabled` (Boolean)
+- `max_objects` (Number)
+- `max_size` (Number)
+- `max_size_kb` (Number)
+- `type` (String)
+- `user_id` (String)
 
 
 <a id="nestedatt--caps"></a>
@@ -71,8 +72,8 @@ Read-Only:
 
 Read-Only:
 
-- **perm** (String)
-- **type** (String)
+- `perm` (String)
+- `type` (String)
 
 
 <a id="nestedatt--keys"></a>
@@ -80,9 +81,9 @@ Read-Only:
 
 Read-Only:
 
-- **access_key** (String)
-- **secret_key** (String)
-- **user** (String)
+- `access_key` (String)
+- `secret_key` (String)
+- `user` (String)
 
 
 <a id="nestedatt--subusers"></a>
@@ -90,8 +91,8 @@ Read-Only:
 
 Read-Only:
 
-- **id** (String)
-- **permissions** (String)
+- `id` (String)
+- `permissions` (String)
 
 
 <a id="nestedatt--swift_keys"></a>
@@ -99,8 +100,8 @@ Read-Only:
 
 Read-Only:
 
-- **secret_key** (String)
-- **user** (String)
+- `secret_key` (String)
+- `user` (String)
 
 
 <a id="nestedatt--user_quota"></a>
@@ -108,12 +109,12 @@ Read-Only:
 
 Read-Only:
 
-- **check_on_raw** (Boolean)
-- **enabled** (Boolean)
-- **max_objects** (Number)
-- **max_size** (Number)
-- **max_size_kb** (Number)
-- **type** (String)
-- **user_id** (String)
+- `check_on_raw` (Boolean)
+- `enabled` (Boolean)
+- `max_objects` (Number)
+- `max_size` (Number)
+- `max_size_kb` (Number)
+- `type` (String)
+- `user_id` (String)
 
 
