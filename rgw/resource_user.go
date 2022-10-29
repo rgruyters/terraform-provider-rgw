@@ -12,103 +12,86 @@ import (
 func schemaUser() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		// Properties
-		"user_id": &schema.Schema{
+		"user_id": {
 			Description: "The ID the user is referred by.",
 			Type:        schema.TypeString,
 			Required:    true,
 			ForceNew:    true,
 		},
-		"display_name": &schema.Schema{
+		"display_name": {
 			Type:     schema.TypeString,
 			Computed: true,
 			Optional: true,
 		},
-		"email": &schema.Schema{
+		"email": {
 			Type:     schema.TypeString,
 			Computed: true,
 			Optional: true,
 		},
-		"suspended": &schema.Schema{
+		"suspended": {
 			Type:     schema.TypeInt,
 			Computed: true,
 			Optional: true,
 		},
-		"max_buckets": &schema.Schema{
+		"max_buckets": {
 			Type:     schema.TypeInt,
 			Computed: true,
 			Optional: true,
 		},
 		// Only for creation and modification
-		"generate_key": &schema.Schema{
+		"generate_key": {
 			Description: "Only used for creation and modification. If true, a new key will be generated for the user. Default: true for creation, false for modification.",
 			Type:        schema.TypeBool,
 			Optional:    true,
 		},
-		"key_type": &schema.Schema{
+		"key_type": {
 			Description: "Only use for creation and modification when `generate_key` is true.",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
-		"user_caps": &schema.Schema{
+		"user_caps": {
 			Description: "Only used to set user capabilities. To get user capabilities, use `caps` read-only attribute instead.",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
 		// Only for deletion
-		"purge_data": &schema.Schema{
+		"purge_data": {
 			Description: "Only used when deleting the user. Check Ceph RGW Admin Ops API documentation for details.",
 			Type:        schema.TypeInt,
 			Optional:    true,
 		},
 		// Computed
-		"subusers": &schema.Schema{
+		"subusers": {
 			Type:     schema.TypeList,
 			Computed: true,
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
-					"id": &schema.Schema{
+					"id": {
 						Type:     schema.TypeString,
 						Computed: true,
 					},
-					"permissions": &schema.Schema{
+					"permissions": {
 						Type:     schema.TypeString,
 						Computed: true,
 					},
 				},
 			},
 		},
-		"keys": &schema.Schema{
+		"keys": {
 			Type:     schema.TypeList,
 			Computed: true,
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
-					"user": &schema.Schema{
+					"user": {
 						Type:     schema.TypeString,
 						Computed: true,
 					},
-					"access_key": &schema.Schema{
+					"access_key": {
 						Type:      schema.TypeString,
 						Computed:  true,
 						Sensitive: true,
 					},
-					"secret_key": &schema.Schema{
-						Type:      schema.TypeString,
-						Computed:  true,
-						Sensitive: true,
-					},
-				},
-			},
-		},
-		"swift_keys": &schema.Schema{
-			Type:     schema.TypeList,
-			Computed: true,
-			Elem: &schema.Resource{
-				Schema: map[string]*schema.Schema{
-					"user": &schema.Schema{
-						Type:     schema.TypeString,
-						Computed: true,
-					},
-					"secret_key": &schema.Schema{
+					"secret_key": {
 						Type:      schema.TypeString,
 						Computed:  true,
 						Sensitive: true,
@@ -116,56 +99,73 @@ func schemaUser() map[string]*schema.Schema {
 				},
 			},
 		},
-		"caps": &schema.Schema{
+		"swift_keys": {
 			Type:     schema.TypeList,
 			Computed: true,
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
-					"type": &schema.Schema{
+					"user": {
 						Type:     schema.TypeString,
 						Computed: true,
 					},
-					"perm": &schema.Schema{
+					"secret_key": {
+						Type:      schema.TypeString,
+						Computed:  true,
+						Sensitive: true,
+					},
+				},
+			},
+		},
+		"caps": {
+			Type:     schema.TypeList,
+			Computed: true,
+			Elem: &schema.Resource{
+				Schema: map[string]*schema.Schema{
+					"type": {
+						Type:     schema.TypeString,
+						Computed: true,
+					},
+					"perm": {
 						Type:     schema.TypeString,
 						Computed: true,
 					},
 				},
 			},
 		},
-		"op_mask": &schema.Schema{
+		"op_mask": {
 			Type:     schema.TypeString,
 			Computed: true,
 		},
-		"default_placement": &schema.Schema{
+		"default_placement": {
 			Type:     schema.TypeString,
 			Computed: true,
 		},
-		"default_storage_class": &schema.Schema{
+		"default_storage_class": {
 			Type:     schema.TypeString,
 			Computed: true,
 		},
-		"placement_tags": &schema.Schema{
+		"placement_tags": {
 			Type:     schema.TypeList,
 			Computed: true,
 			Elem: &schema.Schema{
 				Type: schema.TypeString,
 			},
 		},
-		"bucket_quota": &schema.Schema{
+		"bucket_quota": {
 			Type:     schema.TypeList,
 			Computed: true,
 			Elem: &schema.Resource{
 				Schema: schemaQuota(),
 			},
 		},
-		"user_quota": &schema.Schema{
+		"user_quota": {
 			Type:     schema.TypeList,
 			Computed: true,
 			Elem: &schema.Resource{
 				Schema: schemaQuota(),
 			},
 		},
-		"type": &schema.Schema{
+		"type": {
 			Type:     schema.TypeString,
 			Computed: true,
 		},
