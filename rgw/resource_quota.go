@@ -18,6 +18,12 @@ func schemaQuota() map[string]*schema.Schema {
 			Required:    true,
 			ForceNew:    true,
 		},
+		"tenant": {
+			Description: "The tenant name to set the quota for.",
+			Type:        schema.TypeString,
+			Optional:    true,
+			ForceNew:    true,
+		},
 		"type": {
 			Description: "`user` or `bucket`",
 			Type:        schema.TypeString,
@@ -65,8 +71,15 @@ func resourceQuota() *schema.Resource {
 
 func rgwQuotaFromSchemaQuota(d *schema.ResourceData) rgwadmin.QuotaSpec {
 	enabled := d.Get("enabled").(bool)
+
+  quid := d.Get("user_id").(string)
+
+  if tenant, ok := d.GetOk("tenant"); ok {
+    quid = fmt.Sprintf("%s$%s", tenant.(string), quid)
+  }
+
 	quota := rgwadmin.QuotaSpec{
-		UID:        d.Get("user_id").(string),
+		UID:        quid,
 		QuotaType:  d.Get("type").(string),
 		Enabled:    &enabled,
 		CheckOnRaw: d.Get("check_on_raw").(bool),
@@ -99,6 +112,8 @@ func flattenRgwQuota(quota rgwadmin.QuotaSpec, userID string) interface{} {
 		"max_size_kb":  quota.MaxSizeKb,
 		"max_objects":  quota.MaxObjects,
 	}
+
+  // FIX: Would it be better to strip tenant from userID?
 	if userID != "" {
 		q["user_id"] = userID
 	}
@@ -126,7 +141,14 @@ func resourceQuotaRead(ctx context.Context, d *schema.ResourceData, m interface{
 	var diags diag.Diagnostics
 
 	userID := d.Get("user_id").(string)
-	user, err := api.GetUser(ctx, rgwadmin.User{ID: userID})
+  quid := userID
+
+  tenant, ok := d.GetOk("tenant")
+  if ok {
+    quid = fmt.Sprintf("%s$%s", tenant.(string), userID)
+  }
+
+	user, err := api.GetUser(ctx, rgwadmin.User{ID: quid})
 	if err != nil {
 		return diag.FromErr(err)
 	}
@@ -140,7 +162,7 @@ func resourceQuotaRead(ctx context.Context, d *schema.ResourceData, m interface{
 		quota = user.BucketQuota
 	}
 
-	id := fmt.Sprintf("%s_%s", quotaType, userID)
+	id := fmt.Sprintf("%s_%s", quotaType, quid)
 	d.SetId(id)
 
 	for key, value := range flattenRgwQuota(quota, userID).(map[string]interface{}) {
