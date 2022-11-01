@@ -18,12 +18,6 @@ func schemaQuota() map[string]*schema.Schema {
 			Required:    true,
 			ForceNew:    true,
 		},
-		"tenant": {
-			Description: "The tenant name to set the quota for.",
-			Type:        schema.TypeString,
-			Optional:    true,
-			ForceNew:    true,
-		},
 		"type": {
 			Description: "`user` or `bucket`",
 			Type:        schema.TypeString,
@@ -71,15 +65,8 @@ func resourceQuota() *schema.Resource {
 
 func rgwQuotaFromSchemaQuota(d *schema.ResourceData) rgwadmin.QuotaSpec {
 	enabled := d.Get("enabled").(bool)
-
-  quid := d.Get("user_id").(string)
-
-  if tenant, ok := d.GetOk("tenant"); ok {
-    quid = fmt.Sprintf("%s$%s", tenant.(string), quid)
-  }
-
 	quota := rgwadmin.QuotaSpec{
-		UID:        quid,
+		UID:        d.Get("user_id").(string),
 		QuotaType:  d.Get("type").(string),
 		Enabled:    &enabled,
 		CheckOnRaw: d.Get("check_on_raw").(bool),
@@ -112,7 +99,6 @@ func flattenRgwQuota(quota rgwadmin.QuotaSpec, userID string) interface{} {
 		"max_size_kb":  quota.MaxSizeKb,
 		"max_objects":  quota.MaxObjects,
 	}
-
 	if userID != "" {
 		q["user_id"] = userID
 	}
@@ -140,20 +126,7 @@ func resourceQuotaRead(ctx context.Context, d *schema.ResourceData, m interface{
 	var diags diag.Diagnostics
 
 	userID := d.Get("user_id").(string)
-
-  // Set quota userid based on user id
-  quid := userID
-
-	// HACK: We need to find a better way to set quota userid when a tenant is set.
-	// HACK: This works but feels not the right way. The API state that only uid
-	// HACK: can be set.
-	// HACK: https://docs.ceph.com/en/latest/radosgw/adminops/#get-user-info
-  tenant, ok := d.GetOk("tenant")
-  if ok {
-    quid = fmt.Sprintf("%s$%s", tenant.(string), userID)
-  }
-
-	user, err := api.GetUser(ctx, rgwadmin.User{ID: quid})
+	user, err := api.GetUser(ctx, rgwadmin.User{ID: userID})
 	if err != nil {
 		return diag.FromErr(err)
 	}
@@ -167,7 +140,7 @@ func resourceQuotaRead(ctx context.Context, d *schema.ResourceData, m interface{
 		quota = user.BucketQuota
 	}
 
-	id := fmt.Sprintf("%s_%s", quotaType, quid)
+	id := fmt.Sprintf("%s_%s", quotaType, userID)
 	d.SetId(id)
 
 	for key, value := range flattenRgwQuota(quota, userID).(map[string]interface{}) {
