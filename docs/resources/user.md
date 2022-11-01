@@ -40,7 +40,6 @@ resource "rgw_user" "my_user" {
 
 ### Read-Only
 
-- `bucket_quota` (List of Object) (see [below for nested schema](#nestedatt--bucket_quota))
 - `caps` (List of Object) (see [below for nested schema](#nestedatt--caps))
 - `default_placement` (String)
 - `default_storage_class` (String)
@@ -51,22 +50,6 @@ resource "rgw_user" "my_user" {
 - `subusers` (List of Object) (see [below for nested schema](#nestedatt--subusers))
 - `swift_keys` (List of Object) (see [below for nested schema](#nestedatt--swift_keys))
 - `type` (String)
-- `user_quota` (List of Object) (see [below for nested schema](#nestedatt--user_quota))
-
-<a id="nestedatt--bucket_quota"></a>
-### Nested Schema for `bucket_quota`
-
-Read-Only:
-
-- `check_on_raw` (Boolean)
-- `enabled` (Boolean)
-- `max_objects` (Number)
-- `max_size` (Number)
-- `max_size_kb` (Number)
-- `tenant` (String)
-- `type` (String)
-- `user_id` (String)
-
 
 <a id="nestedatt--caps"></a>
 ### Nested Schema for `caps`
@@ -103,20 +86,5 @@ Read-Only:
 
 - `secret_key` (String)
 - `user` (String)
-
-
-<a id="nestedatt--user_quota"></a>
-### Nested Schema for `user_quota`
-
-Read-Only:
-
-- `check_on_raw` (Boolean)
-- `enabled` (Boolean)
-- `max_objects` (Number)
-- `max_size` (Number)
-- `max_size_kb` (Number)
-- `tenant` (String)
-- `type` (String)
-- `user_id` (String)
 
 
