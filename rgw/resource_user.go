@@ -156,20 +156,6 @@ func schemaUser() map[string]*schema.Schema {
 				Type: schema.TypeString,
 			},
 		},
-		"bucket_quota": {
-			Type:     schema.TypeList,
-			Computed: true,
-			Elem: &schema.Resource{
-				Schema: schemaQuota(),
-			},
-		},
-		"user_quota": {
-			Type:     schema.TypeList,
-			Computed: true,
-			Elem: &schema.Resource{
-				Schema: schemaQuota(),
-			},
-		},
 		"type": {
 			Type:     schema.TypeString,
 			Computed: true,
@@ -252,8 +238,6 @@ func flattenRgwUser(user rgwadmin.User) interface{} {
 		"default_placement":     user.DefaultPlacement,
 		"default_storage_class": user.DefaultStorageClass,
 		"placement_tags":        user.PlacementTags,
-		"bucket_quota":          []interface{}{flattenRgwQuota(user.BucketQuota, user.ID)},
-		"user_quota":            []interface{}{flattenRgwQuota(user.UserQuota, user.ID)},
 		"type":                  user.Type,
 	}
 }
