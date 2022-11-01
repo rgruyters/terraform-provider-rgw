@@ -113,7 +113,6 @@ func flattenRgwQuota(quota rgwadmin.QuotaSpec, userID string) interface{} {
 		"max_objects":  quota.MaxObjects,
 	}
 
-  // FIX: Would it be better to strip tenant from userID?
 	if userID != "" {
 		q["user_id"] = userID
 	}
@@ -141,8 +140,14 @@ func resourceQuotaRead(ctx context.Context, d *schema.ResourceData, m interface{
 	var diags diag.Diagnostics
 
 	userID := d.Get("user_id").(string)
+
+  // Set quota userid based on user id
   quid := userID
 
+	// HACK: We need to find a better way to set quota userid when a tenant is set.
+	// HACK: This works but feels not the right way. The API state that only uid
+	// HACK: can be set.
+	// HACK: https://docs.ceph.com/en/latest/radosgw/adminops/#get-user-info
   tenant, ok := d.GetOk("tenant")
   if ok {
     quid = fmt.Sprintf("%s$%s", tenant.(string), userID)
