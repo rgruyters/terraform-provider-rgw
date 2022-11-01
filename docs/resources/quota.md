@@ -42,6 +42,7 @@ resource "rgw_quota" "user_my_user" {
 - `max_objects` (Number)
 - `max_size` (Number)
 - `max_size_kb` (Number)
+- `tenant` (String) The tenant name to set the quota for.
 
 ### Read-Only
 

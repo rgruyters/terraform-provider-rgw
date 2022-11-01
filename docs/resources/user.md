@@ -63,6 +63,7 @@ Read-Only:
 - `max_objects` (Number)
 - `max_size` (Number)
 - `max_size_kb` (Number)
+- `tenant` (String)
 - `type` (String)
 - `user_id` (String)
 
@@ -114,6 +115,7 @@ Read-Only:
 - `max_objects` (Number)
 - `max_size` (Number)
 - `max_size_kb` (Number)
+- `tenant` (String)
 - `type` (String)
 - `user_id` (String)
 
